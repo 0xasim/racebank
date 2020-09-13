@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongo = require('mongodb')
 
 var indexRouter = require('./routes/index');
 var transRouter = require('./routes/trans');  // transaction router
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+const uri = `mongodb+srv://${process.env['db_username']}:${process.env['db_password']}@cluster0.gbqtc.mongodb.net/${process.env['db_name']}?retryWrites=true&w=majority`
 
 app.use('/', indexRouter);
 app.use('/transaction', transRouter);
