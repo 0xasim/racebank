@@ -2,5 +2,24 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
-  a(href='/transaction')/ Make a transaction
+  p Welcome to the #{title}
+  a(href='/transaction') Make a transaction
+  br
+  p: b List of top accounts. The ones that are winning
+  br
+  table
+    thead
+      tr
+        th Rank
+        th Name
+        th Account No
+        th Amount
+    tbody
+      - var n = 0;
+        for acc in accounts
+          - n += 1;
+          tr
+            td= n 
+            td= acc.name
+            td= acc.account_no
+            td= acc.amount

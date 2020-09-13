@@ -1,9 +1,11 @@
+require('dotenv').config({path: __dirname + '/.env'})
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var mongo = require('mongodb')
+const MongoClient = require('mongodb').MongoClient;
 
 var indexRouter = require('./routes/index');
 var transRouter = require('./routes/trans');  // transaction router
@@ -20,7 +22,32 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const uri = `mongodb+srv://${process.env['db_username']}:${process.env['db_password']}@cluster0.gbqtc.mongodb.net/${process.env['db_name']}?retryWrites=true&w=majority`
+
+const db_username = encodeURIComponent(process.env['db_username'])
+const db_password = encodeURIComponent(process.env['db_password'])
+const db_clusterUrl = process.env['db_clusterUrl']
+const db_authMechanism = process.env['db_authMechanism']
+const uri =
+  `mongodb+srv://${db_username}:${db_password}@${db_clusterUrl}/?authMechanism=${db_authMechanism}`;
+
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+async function run() {
+  try {
+    // Connect the client to the server
+    await client.connect();
+
+    // Establish and verify connection
+    await client.db("racingbank").command({ ping: 1 });
+    console.log("Connected successfully to server");
+    db = client.db("racingbank")
+  } finally {
+    // Ensures that the client will close when you finish/error
+    //await client.close();
+  }
+}
+run().catch(console.dir);
+
 
 app.use('/', indexRouter);
 app.use('/transaction', transRouter);
