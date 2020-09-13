@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  form(method='POST', action='/transaction')
+    span Amount:
+    br
+    input(type='number', name='amount')
+    br
+    select(name='to')
+      option(value='a') a
+      option(value='b') b
+    br
+    input(type='submit', value='Transfer')
