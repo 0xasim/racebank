@@ -10,7 +10,6 @@ router.get('/', async function(req, res, next) {
     title: 'Racing Bank',
     accounts: accounts
   }
-  console.log(data)
   res.render('index', data);
 });
 
