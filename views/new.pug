@@ -1,0 +1,10 @@
+extends layout
+block content
+  b Create a new session. Any Previous session (if exists) will be destroyed
+  br
+  br
+  form(method='POST', action='/new')
+    span Username:
+    br
+    input(type='text', name='username')
+    input(type='submit', value='Create')

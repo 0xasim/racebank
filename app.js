@@ -6,9 +6,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const MongoClient = require('mongodb').MongoClient;
+var session = require('express-session');
 
 var indexRouter = require('./routes/index');
+var raceRouter = require('./routes/race');
 var transRouter = require('./routes/trans');  // transaction router
+var newAccRouter = require('./routes/new');
 
 var app = express();
 
@@ -21,7 +24,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(session({
+  resave: false, // don't save session if unmodified
+  saveUninitialized: false, // don't create session until something stored
+  secret: process.env['session_secret']
+}));
 
 const db_username = encodeURIComponent(process.env['db_username'])
 const db_password = encodeURIComponent(process.env['db_password'])
@@ -51,6 +58,8 @@ run().catch(console.dir);
 
 app.use('/', indexRouter);
 app.use('/transaction', transRouter);
+app.use('/race', raceRouter);
+app.use('/new', newAccRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
