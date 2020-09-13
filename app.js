@@ -12,7 +12,7 @@ var indexRouter = require('./routes/index');
 var raceRouter = require('./routes/race');
 var transRouter = require('./routes/trans');  // transaction router
 var newAccRouter = require('./routes/new');
-
+var {isSession} = require('./routes/is');
 var app = express();
 
 // view engine setup
@@ -29,6 +29,7 @@ app.use(session({
   saveUninitialized: false, // don't create session until something stored
   secret: process.env['session_secret']
 }));
+app.use(isSession)
 
 const db_username = encodeURIComponent(process.env['db_username'])
 const db_password = encodeURIComponent(process.env['db_password'])

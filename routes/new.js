@@ -24,7 +24,7 @@ router.post('/', async function(req, res, next) {
           }
         ])
         req.session.racer = inRes.insertedIds
-        res.redirect('/')
+        res.redirect('/transaction')
       }
       else res.redirect('/new?error=Invalid Characters in input. Only A-Z, a-z, _, 0-9 allowed or >20')
     }
