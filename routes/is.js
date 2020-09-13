@@ -1,6 +1,6 @@
 function isSession(req, res, next){
-  if(req.session.racer) req.locals.isSession = true
-  else req.locals.isSession = false
+  if(req.session.racer) res.locals.isSession = true
+  else res.locals.isSession = false
   next()
 }
 
