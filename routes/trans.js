@@ -11,8 +11,12 @@ router.get('/', verifySession, function(req, res, next) {
   });
 });
 
-router.post('/', verifySession, verifyTransactionInputs, verifyTransactionAccounts, makeTransaction,function(req, res, next){
-  res.send('{status: success}')
+router.post('/', verifySession, verifyTransactionInputs, verifyTransactionAccounts, makeTransaction,async function(req, res, next){
+  console.log(req.session)
+  let ret = await db.collection('accounts').find()
+  let data = await ret.toArray()
+  console.log(data)
+  res.send(data)
 })
 
 function verifyTransactionInputs(req, res, next){
@@ -31,20 +35,17 @@ function verifySession(req, res, next){
   else res.redirect('/new')
 }
 // no confirmation yet weather amount exists
-function makeTransaction(req, res, next){
-  let up = db.collection('accounts').updateOne(
-    {
-      _id: req.body.to
-    },
-    {
-      $inc: {
-        amount: Number(req.body.amount) // increment -amount  = decrement amount
-      }
-    })
-  up.then(
-    res => console.log(`Updated ${res.result.n} documents`),
-    err => console.error(`Something went wrong: ${err}`),
-  )
+async function makeTransaction(req, res, next){
+  let filter = {
+    _id: req.body.to
+  }
+  let updateDoc = {
+    $inc: {
+      amount: Number(req.body.amount) // increment -amount  = decrement amount
+    }
+  }
+  let up = await db.collection('accounts').updateOne(filter, updateDoc)
+  console.log(up.nModified)
   next()
 }
 
