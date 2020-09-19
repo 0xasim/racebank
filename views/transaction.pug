@@ -1,24 +1,26 @@
 extends layout
 
 block content
-  h4 to: 1
+  h4 From #{sec.name} to #{prim.name}
   form(method='POST', action='/transaction')
     span Amount:
     br
     input(type='number', name='amount')
     br
-    input(type='hidden', name='to', value='0')
+    input(type='hidden', name='from', value=sec.id)
+    input(type='hidden', name='to', value=prim.id)
     //- from to in the same?
     //- make two separate forms, from a to b and b to a
     input(type='submit', value='Transfer')
 
-  h4 to: 1
+  h4 From #{prim.name} to #{sec.name}
   form(method='POST', action='/transaction')
     span Amount:
     br
     input(type='number', name='amount')
     br
-    input(type='hidden', name='to', value='1')
+    input(type='hidden', name='from', value=prim.id)
+    input(type='hidden', name='to', value=sec.id)
     //- from to in the same?
     //- make two separate forms, from a to b and b to a
     input(type='submit', value='Transfer')

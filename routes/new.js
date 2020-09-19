@@ -7,26 +7,38 @@ router.get('/', (req, res, next) => {
 
 router.post('/', async function(req, res, next) {
   if(req.body.username){
+    let prim_name = req.body.username
+    let sec_name = req.body.username.split('').reverse().join('')
     // See if primary i-e entered username already exists
-    prim = await db.collection('accounts').findOne({name: req.body.username})
+    prim_exists = await db.collection('accounts').findOne({name: prim_name})
     // Reversed username also shouldn't exist
-    sec = await db.collection('accounts').findOne({name: req.body.username.split('').reverse().join('')})
+    sec_exists = await db.collection('accounts').findOne({name: sec_name})
     
-    if(!prim && !sec){
+    if(!prim_exists && !sec_exists){
       let re = /^\w+$/
-      var isValid = re.test(req.body.username)
-      if(isValid && req.body.username.length<20){
+      var isValid = re.test(prim_name)
+      if(isValid && prim_name.length<20){
         let inRes = await db.collection('accounts').insertMany([
           { // Secondary account, reversed username
-            name: req.body.username.split('').reverse().join(''), // Reversed username 
+            name: sec_name, // Reversed username 
             amount: 1000
           },
           { // Primary account, real username
-            name: req.body.username,  
+            name: prim_name,  
             amount: 0
           }
         ])
-        req.session.racer = inRes.insertedIds
+        req.session.racer = {
+          prim: {
+            id: inRes.insertedIds[1],
+            name: prim_name
+          },
+          sec: {
+            id: inRes.insertedIds[0],
+            name: sec_name
+          },
+          ids: [inRes.insertedIds[0], inRes.insertedIds[1]]
+        }
         res.redirect('/transaction')
       }
       else res.redirect('/new?error=Invalid Characters in input. Only A-Z, a-z, _, 0-9 allowed or >20')
