@@ -13,7 +13,7 @@ router.post('/', verifySession, verifyTransactionInputs, verifyTransactionAccoun
 
 function verifyTransactionInputs(req, res, next){
   let amount = Number(req.body.amount)
-  if(req.body.to && req.body.from && amount) next()
+  if(req.body.to && amount) next() // && req.body.from???
   else res.send('{status: failed}')
 }
 
@@ -26,14 +26,14 @@ function verifySession(req, res, next){
   if(req.session.racer) next()
   else res.redirect('/new')
 }
-
+// no confirmation yet weather amount exists
 function makeTransaction(req, res, next){
   db.collection('accounts').update({
     _id: req.body.to
   },
   {
-    $set:{
-      amount: amount-10
+    $inc: {
+      amount: -req.body.amount // increment -amount  = decrement amount
     }
   })
   next()
