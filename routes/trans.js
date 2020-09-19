@@ -7,7 +7,7 @@ router.get('/', verifySession, function(req, res, next) {
   res.render('transaction');
 });
 
-router.post('/', verifySession, verifyTransactionInputs, verifyTransactionAccounts, function(req, res, next){
+router.post('/', verifySession, verifyTransactionInputs, verifyTransactionAccounts, makeTransaction,function(req, res, next){
   res.send('{status: success}')
 })
 
@@ -26,4 +26,17 @@ function verifySession(req, res, next){
   if(req.session.racer) next()
   else res.redirect('/new')
 }
+
+function makeTransaction(req, res, next){
+  db.collection('accounts').update({
+    _id: req.body.to
+  },
+  {
+    $set:{
+      amount: amount-10
+    }
+  })
+  next()
+}
+
 module.exports = router;

@@ -14,11 +14,11 @@ router.post('/', async function(req, res, next) {
       var isValid = re.test(req.body.username)
       if(isValid && req.body.username.length<20){
         let inRes = await db.collection('accounts').insertMany([
-          { // Account to transfer from
+          { // Primary account, real username
             name: req.body.username.split('').reverse().join(''), // Reversed username 
             amount: 1000
           },
-          { // Account to transfer to
+          { // Secondary account, reversed username
             name: req.body.username,  
             amount: 0
           }

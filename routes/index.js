@@ -7,7 +7,7 @@ router.get('/', async function(req, res, next) {
   let cursor = db.collection('accounts').find({})
   let accounts = await cursor.toArray()
   let data = {
-    title: 'Racing Bank',
+    title: 'Racing Bank', // Put it inside app locals!
     accounts: accounts
   }
   res.render('index', data);
